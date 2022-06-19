@@ -63,7 +63,7 @@ function addBullet() {
     bullet = {
         speedX: (wordToShoot.x + wordToShoot.index * 15 - player.x) / setting.bulletSteps,
         speedY: (wordToShoot.y - player.y) / setting.bulletSteps,
-        x: player.x,
+        x: player.x + player.width / 2,
         y: player.y,
         step: 0
     };
@@ -112,20 +112,20 @@ function drawPlayer() {
         ctx.drawImage(player.image, player.x, player.y, player.width, player.height);
     }
     else {
+        var x = canvas.width / 2;
+        var y = canvas.height - player.height / 2;
+
         let dx = player.x - wordToShoot.x;
         let dy = player.y - wordToShoot.y;
 
         let angle = Math.atan(dy / dx);
+        angle += (dx < 0 ? 1 : -1) * Math.PI / 2;
 
-        coefficient = dx < 0 ? 1 : -1;
-
-        angle = coefficient * Math.PI / 2 + angle;
-
-        ctx.translate(player.x, player.y);
+        ctx.translate(x, y);
         ctx.rotate(angle);
         ctx.drawImage(player.image, -player.width / 2, -player.height / 2, player.width, player.height);
         ctx.rotate(-angle);
-        ctx.translate(-player.x, -player.y);
+        ctx.translate(-x, -y);
     }
 }
 
@@ -135,7 +135,7 @@ function drawWords() {
     for (word of currentWords) {
         if (word == wordToShoot) {
             let substring = word.text.substring(wordToShoot.index + 1);
-            ctx.fillText(substring.padStart(wordToShoot.text.length, " ").toUpperCase(), word.x, word.y);
+            ctx.fillText(substring.padStart(wordToShoot.text.length, "-").toUpperCase(), word.x, word.y);
         }
         else {
             ctx.fillText(word.text.toUpperCase(), word.x, word.y);
